@@ -18,6 +18,30 @@ function elixir_path() {
   echo "$(platform_tools_path)/elixir"
 }
 
+function build_hex_home_path() {
+  echo "$(platform_tools_path)/.hex"
+}
+
+function runtime_hex_home_path() {
+  echo "$(runtime_platform_tools_path)/.hex"
+}
+
+function build_mix_home_path() {
+  echo "$(platform_tools_path)/.mix"
+}
+
+function runtime_mix_home_path() {
+  echo "$(runtime_platform_tools_path)/.mix"
+}
+
+function build_mix_archives_path() {
+  echo "$(build_mix_home_path)/archives"
+}
+
+function runtime_mix_archives_path() {
+  echo "$(runtime_mix_home_path)/archives"
+}
+
 function generate_tmp_erlang_build_dir() {
   # Do not call this in a subshell e.g. $(generate_tmp_erlang_build_dir)
   tmp_erlang_build_dir="$(mktemp -d)"

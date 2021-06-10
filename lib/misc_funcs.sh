@@ -25,10 +25,10 @@ function output_warning() {
   echo -e "${spacing} \e[31m$1\e[0m"
 }
 
-function output_stderr() { 
+function output_stderr() {
   # Outputs to stderr in case it is inside a function so it does not
   # disturb the return value. Useful for debugging.
-  echo "$@" 1>&2; 
+  echo "$@" 1>&2;
 }
 
 
@@ -99,6 +99,40 @@ function export_mix_env() {
   fi
 
   output_line "* MIX_ENV=${MIX_ENV}"
+}
+
+function export_mix_home() {
+  if [ -z "$MIX_HOME" ]; then
+    if [ -d $env_path ] && [ -f $env_path/MIX_HOME ]; then
+      export MIX_HOME=$(cat $env_path/MIX_HOME)
+    else
+      export MIX_HOME=$(build_mix_home_path)
+    fi
+  fi
+
+  output_line "* MIX_HOME=${MIX_HOME}"
+}
+
+function export_mix_archives() {
+  if [ -z "$MIX_ARCHIVES" ]; then
+    if [ -d $env_path ] && [ -f $env_path/MIX_ARCHIVES ]; then
+      export MIX_ARCHIVES=$(cat $env_path/MIX_ARCHIVES)
+    else
+      export MIX_ARCHIVES=$(build_mix_archives_path)
+    fi
+  fi
+}
+
+function export_hex_home() {
+  if [ -z "$HEX_HOME" ]; then
+    if [ -d $env_path ] && [ -f $env_path/HEX_HOME ]; then
+      export HEX_HOME=$(cat $env_path/HEX_HOME)
+    else
+      export HEX_HOME=$(build_mix_home)
+    fi
+  fi
+
+  output_line "* HEX_HOME=${HEX_HOME}"
 }
 
 function check_stack() {

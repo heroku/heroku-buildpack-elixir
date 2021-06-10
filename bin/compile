@@ -27,6 +27,9 @@ mkdir $(platform_tools_path)
 
 export_env_vars
 export_mix_env
+export_mix_home
+export_mix_archives
+export_hex_home
 load_config
 check_erlang_version "$erlang_version"
 
