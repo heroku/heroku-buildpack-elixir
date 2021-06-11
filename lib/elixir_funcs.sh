@@ -26,8 +26,8 @@ function download_elixir() {
 function install_elixir() {
   output_section "Installing Elixir ${elixir_version} $(elixir_changed)"
 
-  mkdir -p $(elixir_path)
-  cd $(elixir_path)
+  mkdir -p $(build_elixir_path)
+  cd $(build_elixir_path)
 
   if type "unzip" &> /dev/null; then
     unzip -q $(elixir_cache_path)/$(elixir_download_file)
@@ -37,8 +37,8 @@ function install_elixir() {
 
   cd - > /dev/null
 
-  chmod +x $(elixir_path)/bin/*
-  PATH=$(elixir_path)/bin:${PATH}
+  chmod +x $(build_elixir_path)/bin/*
+  PATH=$(build_elixir_path)/bin:${PATH}
 
   export LC_CTYPE=en_US.utf8
 }
@@ -55,13 +55,13 @@ function clean_elixir_downloads() {
 
 function restore_mix() {
   if [ -d $(mix_backup_path) ]; then
-    mkdir -p ${HOME}/.mix
-    cp -pR $(mix_backup_path)/* ${HOME}/.mix
+    mkdir -p $(build_mix_home_path)
+    cp -pR $(mix_backup_path)/* $(build_mix_home_path)
   fi
 
   if [ -d $(hex_backup_path) ]; then
-    mkdir -p ${HOME}/.hex
-    cp -pR $(hex_backup_path)/* ${HOME}/.hex
+    mkdir -p $(build_hex_home_path)
+    cp -pR $(hex_backup_path)/* $(build_hex_home_path)
   fi
 }
 
@@ -71,8 +71,8 @@ function backup_mix() {
 
   mkdir -p $(mix_backup_path) $(hex_backup_path)
 
-  cp -pR ${HOME}/.mix/* $(mix_backup_path)
-  cp -pR ${HOME}/.hex/* $(hex_backup_path)
+  cp -pR $(build_mix_home_path)/* $(mix_backup_path)
+  cp -pR $(build_hex_home_path)/* $(hex_backup_path)
 }
 
 function install_hex() {

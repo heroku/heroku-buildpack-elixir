@@ -28,23 +28,29 @@ function clean_erlang_downloads() {
 function install_erlang() {
   output_section "Installing Erlang ${erlang_version} $(erlang_changed)"
 
-  rm -rf $(erlang_build_path)
-  mkdir -p $(erlang_build_path)
-  tar zxf $(erlang_cache_path)/$(erlang_tarball) -C $(erlang_build_path) --strip-components=1
+  local tmp_path=$(mktemp -d)
+
+  rm -rf $(build_erlang_path)
+
+  tar zxf $(erlang_cache_path)/$(erlang_tarball) -C "${tmp_path}" --strip-components=1
 
   rm -rf $(runtime_erlang_path)
   mkdir -p $(runtime_platform_tools_path)
-  ln -s $(erlang_build_path) $(runtime_erlang_path)
-  $(erlang_build_path)/Install -minimal $(runtime_erlang_path)
+  ln -s "${tmp_path}" "$(runtime_erlang_path)"
+  ${tmp_path}/Install -minimal "$(runtime_erlang_path)"
+  ls "$(runtime_erlang_path)"
 
-  # only copy if using old build system;
-  # newer versions of the build system run builds with BUILD_PATH=/app
-  # https://github.com/HashNuke/heroku-buildpack-elixir/issues/194#issuecomment-800425532
-  if [ "${erlang_path}" != "${runtime_erlang_path}" ]; then
-    cp -R $(erlang_build_path) $(erlang_path)
+  rm "$(runtime_erlang_path)"
+  # now copy without symlinks
+  # ensure copy ends up in the build
+  mkdir -p "$(build_erlang_path)"
+  cp -R ${tmp_path}/* "$(build_erlang_path)"
+
+  if [ "$(runtime_erlang_path)" != "$(build_erlang_path)" ]; then
+    ln -s "$(build_erlang_path)" "$(runtime_erlang_path)"
   fi
 
-  PATH=$(erlang_path)/bin:$PATH
+  PATH=$(runtime_erlang_path)/bin:$PATH
 }
 
 function erlang_changed() {
